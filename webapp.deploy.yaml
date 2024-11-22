@@ -3,22 +3,47 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: webapp
+    app: hp
+    tier: backend
   name: webapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: hp
+      tier: backend
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: webapp
+        app: hp
+        tier: backend
     spec:
       containers:
       - image: arthureudeline/php-lab-server
         name: php-lab-server
+        ports:
+          - containerPort: 80
         resources: {}
-status: {}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_ROOT_PASSWORD
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_NAME

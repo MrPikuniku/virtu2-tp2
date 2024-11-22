@@ -3,22 +3,48 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: db
+    app: hp
+    tier: db
   name: db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db
+      app: hp
+      tier: db
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: db
+        app: hp
+        tier: db
     spec:
       containers:
       - image: arthureudeline/mariadb-lab-hp
         name: mariadb-lab-hp
+        ports:
+          - containerPort: 3306
         resources: {}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_ROOT_PASSWORD
+          - name: MYSQL_USER
+            valueFrom:
+               secretKeyRef:
+                 name: db-secrets
+                 key: DB_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+               secretKeyRef:
+                 name: db-secrets
+                 key: DB_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+               secretKeyRef:
+                 name: db-secrets
+                 key: DB_NAME
 status: {}
